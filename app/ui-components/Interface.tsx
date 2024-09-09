@@ -8,6 +8,8 @@ import {
   TheaterIcon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import Stopwatch from "../animation-components/Stopwatch";
+
 type Props = {
   frameRate: number;
   currentVisual: string;
@@ -40,12 +42,15 @@ const Interface = ({
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<AudioBufferSourceNode | null>(null);
   const startTimeRef = useRef<number | null>(null);
-  const pauseTimeRef = useRef<number | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const [pausedAt, setPausedAt] = useState<number>(0);
 
   const changeVisual = () => {
     setCurrentVisual(currentVisual === "V-Sp1n3" ? "V-Sp1n4" : "V-Sp1n3");
+  };
+
+  const handleTimeUpdate = (time: number) => {
+    setCurrentTime(time);
   };
 
   useEffect(() => {
@@ -83,7 +88,6 @@ const Interface = ({
         setAudioData(decodedAudioBuffer);
         setCurrentTime(0);
         setIsPlaying(false);
-
         if (sourceRef.current) {
           sourceRef.current.stop();
           sourceRef.current.disconnect();
@@ -118,11 +122,10 @@ const Interface = ({
 
       sourceRef.current.start(0, offset);
       startTimeRef.current = audioContextRef.current.currentTime - offset;
-
       sourceRef.current.onended = () => {
         setIsPlaying(false);
-        setCurrentTime(audioBuffer.duration);
-        // Don't reset pausedAt here
+        // setCurrentTime(audioBuffer.duration);
+        setCurrentTime(0);
       };
 
       console.log("Audio source created and started at offset:", offset);
@@ -145,7 +148,6 @@ const Interface = ({
       createAndStartSource(pausedAt);
       setIsPlaying(true);
       startTimeRef.current = audioContextRef.current.currentTime - pausedAt;
-      updateCurrentTime();
     } else {
       console.error("Unable to play: audioBuffer or audioContext is null");
     }
@@ -171,25 +173,17 @@ const Interface = ({
 
   const handleReplay = () => {
     console.log("Replay button clicked");
-    handlePause(); // Stop current playback
-    setPausedAt(0);
-    setCurrentTime(0);
-    handlePlay(); // Start playback from the beginning
-  };
-
-  const updateCurrentTime = () => {
-    if (audioContextRef.current && startTimeRef.current !== null && isPlaying) {
-      const newTime =
-        audioContextRef.current.currentTime - startTimeRef.current;
-      setCurrentTime(newTime);
-      if (newTime < audioBuffer!.duration) {
-        animationFrameRef.current = requestAnimationFrame(updateCurrentTime);
-      } else {
-        setIsPlaying(false);
-        setCurrentTime(audioBuffer!.duration);
-        setPausedAt(0);
-        startTimeRef.current = null;
-      }
+    if (isPlaying) {
+      handlePause(); // Stop current playback
+      setPausedAt(0);
+      setCurrentTime(0);
+      setTimeout(() => {
+        handlePlay(); // Start playback from the beginning
+      }, 10);
+    } else {
+      setPausedAt(0);
+      setCurrentTime(0);
+      handlePlay();
     }
   };
 
@@ -209,12 +203,12 @@ const Interface = ({
   }, []);
 
   const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    const miliseconds = Math.floor(time % 60) / 100;
+    const minutes = Math.floor(time / 60000);
+    const seconds = Math.floor((time % 60000) / 1000);
+    const milliseconds = Math.floor((time % 1000) / 10);
     return `${minutes.toString().padStart(2, "0")}:${seconds
       .toString()
-      .padStart(2, "0")}:${miliseconds.toString().padStart(2, "0")}`;
+      .padStart(2, "0")}.${milliseconds.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -228,6 +222,11 @@ const Interface = ({
                 {currentVisual}
               </h1>
             </div>
+            <Stopwatch
+              isRunning={isPlaying}
+              onTimeUpdate={handleTimeUpdate}
+              initialTime={currentTime}
+            />
             <h1 className="text-[1.1rem]">{formatTime(currentTime)}</h1>
           </div>
 
@@ -244,15 +243,24 @@ const Interface = ({
           <Copyright />
 
           <div className="flex items-center gap-8">
-            <div className="z-20 flex gap-4 w-full">
+            <div className="z-20 flex gap-4 w-full hidden">
               <button onClick={handlePlay} disabled={isPlaying}>
-                <PlayCircleIcon size={24} />
+                <PlayCircleIcon
+                  className={isPlaying ? "text-neutral-400" : "text-primary"}
+                  size={24}
+                />
               </button>
               <button onClick={handlePause} disabled={!isPlaying}>
-                <PauseCircleIcon size={24} />
+                <PauseCircleIcon
+                  className={isPlaying ? "text-primary" : "text-neutral-400"}
+                  size={24}
+                />
               </button>
-              <button onClick={handleReplay}>
-                <ArrowBigLeftDashIcon size={24} />
+              <button onClick={handleReplay} disabled={!isPlaying}>
+                <ArrowBigLeftDashIcon
+                  className={isPlaying ? "text-primary" : "text-neutral-400"}
+                  size={24}
+                />
               </button>
             </div>
 

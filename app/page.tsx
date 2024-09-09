@@ -41,3 +41,11 @@ export default function Home() {
     </>
   );
 }
+
+
+/**
+ * PROBLEMS
+ * Stopwatch doesn't properly record current time upon pause and resume
+ * Replay button is inconsistent in its behavior
+ * 
+ */

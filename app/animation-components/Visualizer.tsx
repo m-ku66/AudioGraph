@@ -55,17 +55,18 @@ const Visualizer = ({
               className="z-10 cursor-pointer flex items-center gap-2 w-[90%] justify-center"
             >
               {spines.map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-primary"
-                  style={{
-                    width: `2.5rem`,
-                    height: `${
-                      dataArray[index % dataArray.length] *
-                      (spineState === "px" ? 0.5 : 0.1)
-                    }${spineState}`,
-                  }}
-                ></div>
+                <div className="w-fit h-fit bg-primary py-0 hover:py-32 duration-150">
+                  <div
+                    key={index}
+                    style={{
+                      width: `2.5rem`,
+                      height: `${
+                        dataArray[index % dataArray.length] *
+                        (spineState === "px" ? 0.5 : 0.1)
+                      }${spineState}`,
+                    }}
+                  ></div>
+                </div>
               ))}
             </div>
           </>
