@@ -40,7 +40,7 @@ const Mandala = ({ dataArray }: Props) => {
         };
       });
     }).flat();
-  }, [dataArray, circleState]);
+  }, [dataArray, circleState, CIRCLE_COUNT]);
 
   const handleCirlcleCount = () => {
     if (CIRCLE_COUNT <= 16) {

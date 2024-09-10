@@ -12,7 +12,6 @@ type Props = {
 
 const Visualizer = ({ setFrameRate, currentVisual, analyser }: Props) => {
   const [spineState, setSpineState] = useState("px");
-  const [circleState, setCircleState] = useState(false);
   const [dataArray, setDataArray] = useState<Uint8Array>(new Uint8Array(64));
   const animationFrameRef = useRef<number | null>(null);
   const frameRateAccumulatorRef = useRef(0);
