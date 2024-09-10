@@ -11,7 +11,7 @@ const Copyright = () => {
       case "light":
         return "/copyright-b.svg";
       default:
-        return "/copyright-b.svg";
+        return "/copyright-w.svg";
     }
   }
   return (

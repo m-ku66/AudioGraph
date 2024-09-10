@@ -13,7 +13,7 @@ const Logo = () => {
       case "light":
         return "/logo-b.svg";
       default:
-        return "/logo-b.svg";
+        return "/logo-w.svg";
     }
   }
   return (

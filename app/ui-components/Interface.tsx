@@ -56,6 +56,18 @@ const Interface = ({
     }
   };
 
+  const handleThemes = () => {
+    if (theme === "light") {
+      setTheme("dark");
+    } else if (theme === "dark") {
+      setTheme("red");
+    } else if (theme === "red") {
+      setTheme("blue");
+    } else if (theme === "blue") {
+      setTheme("light");
+    }
+  };
+
   return (
     <div className="z-[5] absolute w-full h-full px-10 pt-6 pb-4 bg-transparent">
       <div className="flex flex-col w-full h-full items-center justify-between">
@@ -90,7 +102,7 @@ const Interface = ({
               {audioContext ? "Listening" : "No audio context"}
             </h1>
             <div
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              onClick={() => handleThemes()}
               className="cursor-pointer border border-primary p-2 rounded-full"
             >
               <TheaterIcon size={12} />
