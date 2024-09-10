@@ -89,11 +89,7 @@ const Visualizer = ({ setFrameRate, currentVisual, analyser }: Props) => {
       case "V-Mand4la":
         return (
           <>
-            <Mandala
-              dataArray={dataArray}
-              circleState={circleState}
-              setCircleState={setCircleState}
-            />
+            <Mandala dataArray={dataArray} />
           </>
         );
       case "V-8allp1t":
