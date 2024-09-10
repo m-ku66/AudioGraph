@@ -1,15 +1,50 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Interface from "./ui-components/Interface";
 import Visualizer from "./animation-components/Visualizer";
 
 export default function Home() {
   const [frameRate, setFrameRate] = useState<number>(30);
   const [currentVisual, setCurrentVisual] = useState("V-Sp1n3");
-  const [audioData, setAudioData] = useState<AudioBuffer | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
+  const [microphoneStream, setMicrophoneStream] = useState<MediaStream | null>(
+    null
+  );
+
+  useEffect(() => {
+    const initAudio = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        const context = new (window.AudioContext ||
+          (window as any).webkitAudioContext)();
+        const analyserNode = context.createAnalyser();
+        analyserNode.fftSize = 256;
+
+        const source = context.createMediaStreamSource(stream);
+        source.connect(analyserNode);
+
+        setAudioContext(context);
+        setAnalyser(analyserNode);
+        setMicrophoneStream(stream);
+      } catch (error) {
+        console.error("Error accessing microphone:", error);
+      }
+    };
+
+    initAudio();
+
+    return () => {
+      if (microphoneStream) {
+        microphoneStream.getTracks().forEach((track) => track.stop());
+      }
+      if (audioContext) {
+        audioContext.close();
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -18,18 +53,12 @@ export default function Home() {
           frameRate={frameRate}
           currentVisual={currentVisual}
           setCurrentVisual={setCurrentVisual}
-          setAudioData={setAudioData}
-          isPlaying={isPlaying}
-          setIsPlaying={setIsPlaying}
           audioContext={audioContext}
-          setAudioContext={setAudioContext}
           analyser={analyser}
-          setAnalyser={setAnalyser}
         />
         <Visualizer
+          setFrameRate={setFrameRate}
           currentVisual={currentVisual}
-          audioData={audioData}
-          isPlaying={isPlaying}
           analyser={analyser}
         />
       </div>
@@ -41,11 +70,3 @@ export default function Home() {
     </>
   );
 }
-
-
-/**
- * PROBLEMS
- * Stopwatch doesn't properly record current time upon pause and resume
- * Replay button is inconsistent in its behavior
- * 
- */

@@ -15,7 +15,13 @@ const Copyright = () => {
     }
   }
   return (
-    <Image src={getLogoBasedOnTheme()} alt="logo" width={150} height={150} />
+    <Image
+      className="select-none"
+      src={getLogoBasedOnTheme()}
+      alt="logo"
+      width={150}
+      height={150}
+    />
   );
 };
 
