@@ -17,7 +17,6 @@ const Interface = ({
   currentVisual,
   setCurrentVisual,
   audioContext,
-  analyser,
 }: Props) => {
   const { theme, setTheme } = useTheme();
   const [viewportSize, setViewportSize] = useState({

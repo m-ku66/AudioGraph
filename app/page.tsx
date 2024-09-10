@@ -18,8 +18,9 @@ export default function Home() {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
         });
-        const context = new (window.AudioContext ||
-          (window as any).webkitAudioContext)();
+        const AudioContextClass = (window.AudioContext ||
+          window.AudioContext) as typeof AudioContext;
+        const context = new AudioContextClass();
         const analyserNode = context.createAnalyser();
         analyserNode.fftSize = 256;
 

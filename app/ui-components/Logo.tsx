@@ -4,7 +4,7 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 
 const Logo = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const router = useRouter();
   function getLogoBasedOnTheme() {
     switch (theme) {
@@ -12,8 +12,12 @@ const Logo = () => {
         return "/logo-w.svg";
       case "light":
         return "/logo-b.svg";
-      default:
+      case "red":
         return "/logo-w.svg";
+      case "blue":
+        return "/logo-w.svg";
+      default:
+        return "/logo-b.svg";
     }
   }
   return (

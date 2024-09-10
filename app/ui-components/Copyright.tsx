@@ -10,8 +10,12 @@ const Copyright = () => {
         return "/copyright-w.svg";
       case "light":
         return "/copyright-b.svg";
-      default:
+      case "red":
         return "/copyright-w.svg";
+      case "blue":
+        return "/copyright-w.svg";
+      default:
+        return "/copyright-b.svg";
     }
   }
   return (
